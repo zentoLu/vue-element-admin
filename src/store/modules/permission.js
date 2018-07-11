@@ -1,4 +1,11 @@
 import { asyncRouterMap, constantRouterMap } from '@/router'
+import http from '@/utils/httpRequest'
+import { isURL } from '@/utils/validate'
+/* Layout */
+import Layout from '@/views/layout/Layout'
+import Empty from '@/views/layout/components/Empty'
+// 开发环境不使用懒加载, 因为懒加载页面太多的话会造成webpack热更新太慢, 所以只有生产环境使用懒加载
+const _import = require('@/router/import-' + process.env.NODE_ENV)
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -31,6 +38,87 @@ function filterAsyncRouter(asyncRouterMap, roles) {
   return accessedRouters
 }
 
+/**
+ * 判断当前路由类型, global: 全局路由, main: 主入口路由
+ * @param {*} route 当前路由
+ */
+function fnCurrentRouteType(route) {
+  var temp = []
+  for (var i = 0; i < globalRoutes.length; i++) {
+    if (route.path === globalRoutes[i].path) {
+      return 'global'
+    } else if (globalRoutes[i].children && globalRoutes[i].children.length >= 1) {
+      temp = temp.concat(globalRoutes[i].children)
+    }
+  }
+  return temp.length >= 1 ? fnCurrentRouteType(route, temp) : 'main'
+}
+
+/**
+ * 添加动态(菜单)路由
+ * @param {*} menuList 菜单列表
+ * @param {*} routes 递归创建的动态(菜单)路由
+ * @param {*} layer  路由层数
+ */
+function fnAddDynamicMenuRoutes(menuList = [], layer = 1) {
+  var routes = []
+  for (var i = 0; i < menuList.length; i++) {
+    var list = menuList[i].list,
+      route
+    if (list && list.length >= 1) {
+      //目录处理
+      //处理嵌套路由
+      var template =
+      route = {
+        //path: layer !== 1 ? list[0].url.split('/')[0] : '',
+        path: '',
+        //redirect: list[0].url,
+        component: layer === 1 ? Layout : Empty,
+        //name: layer !== 1 ? list[0].url.split('/')[0] : '',
+        name: '',
+        meta: {
+          icon: menuList[i].icon,
+          menuId: String(menuList[i].id),
+          title: menuList[i].name,
+          isDynamic: true,
+          isTab: true
+        },
+        children: fnAddDynamicMenuRoutes(list, layer + 1)
+      }
+    } else {
+      var url = menuList[i].url ? menuList[i].url.replace(/^\//, '') : ''; // 目录
+      route = {
+        path: url.replace(/\//g, '-'),
+        component: null,
+        name: url.replace(/\//g, '-'),
+        meta: {
+          icon: menuList[i].icon,
+          menuId: String(menuList[i].id),
+          title: menuList[i].name,
+          isDynamic: true,
+          isTab: true
+        }
+      }
+
+      try {
+        //let importUrl = '../../views/modules/' + url;
+        (function(url) {
+          //let importUrl = 'example/create';
+          let importUrl = 'modules/' + url;
+          route.component = _import(importUrl);
+          console.log(importUrl,route.component);
+        })(url);
+
+      } catch (e) {
+        console.log(e);
+      }
+
+    }
+    routes.push(route)
+  }
+  return routes
+}
+
 const permission = {
   state: {
     routers: constantRouterMap,
@@ -45,15 +133,30 @@ const permission = {
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data
+        /*const { roles } = data
         let accessedRouters
         if (roles.indexOf('admin') >= 0) {
           accessedRouters = asyncRouterMap
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        }
-        commit('SET_ROUTERS', accessedRouters)
-        resolve()
+        }*/
+        http({
+          url: http.adornUrl('/sys/menu/nav'),
+          method: 'get',
+          params: http.adornParams()
+        }).then(({ data }) => {
+          if (data && data.code === 200) {
+            let accessedRouters = fnAddDynamicMenuRoutes(data.data.menuList)
+            console.log(JSON.parse(JSON.stringify(accessedRouters)));
+            commit('SET_ROUTERS', accessedRouters)
+            resolve()
+            sessionStorage.setItem('menuList', JSON.stringify(data.data.menuList || '[]'))
+            sessionStorage.setItem('permissions', JSON.stringify(data.data.permissions || '[]'))
+          } else {
+            sessionStorage.setItem('menuList', '[]')
+            sessionStorage.setItem('permissions', '[]')
+          }
+        })
       })
     }
   }
