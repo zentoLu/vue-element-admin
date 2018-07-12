@@ -23,22 +23,20 @@
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
-            <el-dropdown-item>
-              {{$t('navbar.dashboard')}}
-            </el-dropdown-item>
-          </router-link>
-          <a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>
-              {{$t('navbar.github')}}
-            </el-dropdown-item>
-          </a>
+
+          <el-dropdown-item>
+            <span @click="updatePasswordHandle">
+              {{$t('navbar.changePassword')}}
+            </span>
+          </el-dropdown-item>
           <el-dropdown-item divided>
             <span @click="logout" style="display:block;">{{$t('navbar.logOut')}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <!-- 弹窗, 修改密码 -->
+    <update-password v-if="updatePassowrdVisible" ref="updatePassowrd"></update-password>
   </el-menu>
 </template>
 
@@ -50,15 +48,22 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+import UpdatePassword from './main-navbar-update-password'
 
 export default {
+  data () {
+    return {
+      updatePassowrdVisible: false
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger,
     ErrorLog,
     Screenfull,
     LangSelect,
-    ThemePicker
+    ThemePicker,
+    UpdatePassword
   },
   computed: {
     ...mapGetters([
@@ -69,12 +74,29 @@ export default {
   },
   methods: {
     toggleSideBar() {
+      console.log(this)
       this.$store.dispatch('toggleSideBar')
+
+    },
+    // 修改密码
+    updatePasswordHandle () {
+      this.updatePassowrdVisible = true
+      this.$nextTick(() => {
+        this.$refs.updatePassowrd.init()
+      })
     },
     logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+      this.$confirm(`确定进行[退出]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('LogOut').then(() => {
+          this.$cookie.delete('token')
+          location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+        })
       })
+
     }
   }
 }

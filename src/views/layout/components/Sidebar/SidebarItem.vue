@@ -9,7 +9,7 @@
           <span v-if="item.children[0].meta&&item.children[0].meta.title" slot="title">{{generateTitle(item.children[0].meta.title)}}</span>
         </el-menu-item>
       </router-link>
-
+      <div v-else-if="item.menuHidden"></div>
       <el-submenu v-else :index="item.meta.menuId" :key="item.meta.menuId">
         <template slot="title">
           <svg-icon v-if="item.meta&&item.meta.icon" :icon-class="item.meta.icon"></svg-icon>

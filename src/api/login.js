@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/httpRequest'
 
 export function loginByUsername(username, password) {
   const data = {
@@ -6,7 +6,7 @@ export function loginByUsername(username, password) {
     password
   }
   return request({
-    url: '/login/login',
+    url: request.adornUrl('/sys/login'),
     method: 'post',
     data
   })
@@ -14,14 +14,14 @@ export function loginByUsername(username, password) {
 
 export function logout() {
   return request({
-    url: '/login/logout',
+    url: request.adornUrl('/sys/logout'),
     method: 'post'
   })
 }
 
 export function getUserInfo(token) {
   return request({
-    url: '/user/info',
+    url: request.adornUrl('/sys/user/info'),
     method: 'get',
     params: { token }
   })

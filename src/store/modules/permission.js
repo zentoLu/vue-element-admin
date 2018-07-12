@@ -4,6 +4,7 @@ import { isURL } from '@/utils/validate'
 /* Layout */
 import Layout from '@/views/layout/Layout'
 import Empty from '@/views/layout/components/Empty'
+import IframeUrl from '@/views/layout/components/IframeUrl'
 // 开发环境不使用懒加载, 因为懒加载页面太多的话会造成webpack热更新太慢, 所以只有生产环境使用懒加载
 const _import = require('@/router/import-' + process.env.NODE_ENV)
 
@@ -68,7 +69,6 @@ function fnAddDynamicMenuRoutes(menuList = [], layer = 1) {
     if (list && list.length >= 1) {
       //目录处理
       //处理嵌套路由
-      var template =
       route = {
         //path: layer !== 1 ? list[0].url.split('/')[0] : '',
         path: '',
@@ -86,7 +86,7 @@ function fnAddDynamicMenuRoutes(menuList = [], layer = 1) {
         children: fnAddDynamicMenuRoutes(list, layer + 1)
       }
     } else {
-      var url = menuList[i].url ? menuList[i].url.replace(/^\//, '') : ''; // 目录
+      var url = menuList[i].url ? menuList[i].url.replace(/^\//, '') : '';
       route = {
         path: url.replace(/\//g, '-'),
         component: null,
@@ -100,19 +100,25 @@ function fnAddDynamicMenuRoutes(menuList = [], layer = 1) {
         }
       }
 
-      try {
-        //let importUrl = '../../views/modules/' + url;
-        (function(url) {
-          //let importUrl = 'example/create';
-          let importUrl = 'modules/' + url;
-          route.component = _import(importUrl);
-          console.log(importUrl,route.component);
-        })(url);
+      if (isURL(menuList[i].url)) {
+        route['path'] = `i-${menuList[i].id}`
+        route['name'] = `i-${menuList[i].id}`
+        route['meta']['iframeUrl'] = menuList[i].url
+        route.component = IframeUrl
+      } else {
+        try {
+          //let importUrl = '../../views/modules/' + url;
+          (function(url) {
+            //let importUrl = 'example/create';
+            let importUrl = 'modules/' + url;
+            route.component = _import(importUrl);
+            console.log(importUrl,route.component);
+          })(url);
 
-      } catch (e) {
-        console.log(e);
+        } catch (e) {
+          console.log(e);
+        }
       }
-
     }
     routes.push(route)
   }
@@ -147,6 +153,7 @@ const permission = {
         }).then(({ data }) => {
           if (data && data.code === 200) {
             let accessedRouters = fnAddDynamicMenuRoutes(data.data.menuList)
+            accessedRouters.push()
             console.log(JSON.parse(JSON.stringify(accessedRouters)));
             commit('SET_ROUTERS', accessedRouters)
             resolve()
