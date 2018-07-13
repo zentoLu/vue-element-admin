@@ -104,6 +104,9 @@ export default {
   components: {
       ProfitMonth
   },
+  created () {
+    this.getDataList()
+  },
   activated () {
     this.getDataList()
   },

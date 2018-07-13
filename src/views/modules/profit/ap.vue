@@ -155,6 +155,9 @@ export default {
       AddOrUpdate,
       ProfitMonth
   },
+  created () {
+    this.getDataList()
+  },
   activated () {
     this.getDataList()
   },

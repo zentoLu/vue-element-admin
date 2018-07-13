@@ -13474,4 +13474,8 @@ select {
 .form-control {
   color: #464a4c;
 }
+
+#app .sidebar-container .router-link-active .el-menu-item{
+  color: rgb(64, 158, 255)!important;
+}
 /*# sourceMappingURL=app.css.map */

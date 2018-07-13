@@ -140,7 +140,7 @@
               <el-row :gutter="20">
                
                <el-col :span="10">控制人姓名：<el-label v-if="apply.Material!=null">{{apply.Material.ownerName}}</el-label></el-col>
-                 <el-col :span="10">公司名称：<el-label v-if="apply.Material!=null">{{apply.Material.ownerPhone}}</el-label></el-col>
+                 <el-col :span="10">控制人电话：<el-label v-if="apply.Material!=null">{{apply.Material.ownerPhone}}</el-label></el-col>
               </el-row>
             </div>
           </el-main>
@@ -183,7 +183,7 @@ export default {
     getDataList() {
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl("/sys/order/findDetail"),
+        url: this.$http.adornUrl("/biz/order/findDetail"),
         method: "post",
         data: this.$http.adornParams({
           applyId: this.$route.query

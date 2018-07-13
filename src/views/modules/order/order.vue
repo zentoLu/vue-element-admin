@@ -162,7 +162,7 @@
 
 </template>
 <script>
-// import "@/assets/css/app.css";
+import "@/assets/css/app.css";
 import Vue from "vue";
 import Followup from "./followup";
 import { Option, DatePicker } from "element-ui";
@@ -392,7 +392,7 @@ export default {
       console.log(this.dataForm.date);
       var date = this.dataForm.date || [];
       this.$http({
-        url: this.$http.adornUrl("/sys/order/list"),
+        url: this.$http.adornUrl("/biz/order/list"),
         method: "post",
         data: this.$http.adornData({
           page: this.pageIndex,

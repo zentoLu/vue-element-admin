@@ -74,7 +74,7 @@ function fnAddDynamicMenuRoutes(menuList = [], layer = 1) {
         path: '',
         //redirect: list[0].url,
         component: layer === 1 ? Layout : Empty,
-        //name: layer !== 1 ? list[0].url.split('/')[0] : '',
+        alwaysShow: true,
         name: '',
         meta: {
           icon: menuList[i].icon,
@@ -112,7 +112,7 @@ function fnAddDynamicMenuRoutes(menuList = [], layer = 1) {
             //let importUrl = 'example/create';
             let importUrl = 'modules/' + url;
             route.component = _import(importUrl);
-            console.log(importUrl,route.component);
+            // console.log(importUrl,route.component);
           })(url);
 
         } catch (e) {
@@ -153,8 +153,8 @@ const permission = {
         }).then(({ data }) => {
           if (data && data.code === 200) {
             let accessedRouters = fnAddDynamicMenuRoutes(data.data.menuList)
-            accessedRouters.push()
-            console.log(JSON.parse(JSON.stringify(accessedRouters)));
+            accessedRouters.push({ path: '*', redirect: '/404', hidden: true })
+            // console.log(JSON.parse(JSON.stringify(accessedRouters)));
             commit('SET_ROUTERS', accessedRouters)
             resolve()
             sessionStorage.setItem('menuList', JSON.stringify(data.data.menuList || '[]'))

@@ -323,7 +323,7 @@ export default {
     getDataInfo() {
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl("/sys/order/getApply"),
+        url: this.$http.adornUrl("/biz/order/getApply"),
         method: "post",
         data: this.$http.adornParams({
           applyId: this.applyId,

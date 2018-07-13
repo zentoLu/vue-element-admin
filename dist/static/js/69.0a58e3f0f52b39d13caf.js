@@ -1,0 +1,1 @@
+webpackJsonp([69],{Ehjx:function(e,t,l){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={name:"editForm",components:{ArticleDetail:l("K3bm").default}},r={render:function(){var e=this.$createElement;return(this._self._c||e)("article-detail",{attrs:{"is-edit":!0}})},staticRenderFns:[]},a=l("vSla")(n,r,!1,null,null,null);t.default=a.exports}});

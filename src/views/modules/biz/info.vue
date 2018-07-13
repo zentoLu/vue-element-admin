@@ -205,7 +205,6 @@ export default {
   },
   methods: {
     setDate(val) {
-      console.log(val);
       if (!val) {
         this.dataForm.sTime = "";
         this.dataForm.eTime = "";

@@ -51,6 +51,7 @@ Vue.component(Button.name, Button)
 Vue.component(Select.name, Select)
 Vue.component(Input.name, Input)
 Vue.component(Autocomplete.name, Autocomplete)
+var citys = require('@/assets/file/citys.json')//加载本地数据文件
 export default {
   data () {
     return {
@@ -60,27 +61,17 @@ export default {
   },
   methods: {
     querySearchAsync (queryString, callback) {
-     // 调用的后台接口
-      let url = `/static/file/city.json`
-      this.$http({
-        url: url,
-        method: 'get',
-        params: this.$http.adornParams()
-      }).then(({data}) => {
-        // 在这里为这个数组中每一个对象加一个value字段, 因为autocomplete只识别value字段并在下拉列中显示
-        let results = []
-        for (let i of data) {
-          if (i['countyname'].indexOf(queryString) !== -1) {
-            results.push({
-              value: i['countyname'],
-              areaid: i['areaid']
-            })
-          }
+      // 在这里为这个数组中每一个对象加一个value字段, 因为autocomplete只识别value字段并在下拉列中显示
+      let results = []
+      for (let i of citys) {
+        if (i['countyname'].indexOf(queryString) !== -1) {
+          results.push({
+            value: i['countyname'],
+            areaid: i['areaid']
+          })
         }
-        callback(results)
-      }).catch((error) => {
-        this.$message.error(error)
-      })
+      }
+      callback(results)
     },
     handleSelect (item) {
       this.areaid = item['areaid']

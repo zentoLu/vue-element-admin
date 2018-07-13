@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import '@/assets/css/app.css'
 import Vue from 'vue'
 import {Option} from 'element-ui'
 Vue.component(Option.name, Option)

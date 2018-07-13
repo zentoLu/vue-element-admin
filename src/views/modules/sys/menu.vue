@@ -35,7 +35,7 @@
         align="center"
         label="图标">
         <template slot-scope="scope">
-          <icon-svg :name="scope.row.icon || ''"></icon-svg>
+          <svg-icon :icon-class="scope.row.icon || ''" :name="scope.row.icon || ''"></svg-icon>
         </template>
       </el-table-column>
       <el-table-column
@@ -104,6 +104,9 @@
     components: {
       TableTreeColumn,
       AddOrUpdate
+    },
+    created () {
+      this.getDataList()
     },
     activated () {
       this.getDataList()

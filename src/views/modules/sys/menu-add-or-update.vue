@@ -53,7 +53,7 @@
                   :key="index"
                   @click="iconActiveHandle(item)"
                   :class="{ 'is-active': item === dataForm.icon }">
-                  <icon-svg :name="item"></icon-svg>
+                  <svg-icon :icon-class="item" :name="item"></svg-icon>
                 </el-button>
               </div>
             </el-popover>

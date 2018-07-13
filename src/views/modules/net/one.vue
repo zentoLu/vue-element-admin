@@ -9,12 +9,13 @@
     <div class="card-footer">
     	<h3 class="modal-title" id="yuwen-comments"></h3>
     	<div id = "listview-id" class="listview listview--bordered">
-		</div>
+		</div>   
     </div>
   </div>
 </template>
 
 <script>
+import '@/assets/css/app.css'
 export default {
   created () {
     this.getData()

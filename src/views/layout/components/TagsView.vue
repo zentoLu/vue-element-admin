@@ -1,11 +1,13 @@
 <template>
   <div class="tags-view-container">
     <scroll-pane class='tags-view-wrapper' ref='scrollPane'>
-      <router-link ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''" v-for="tag in Array.from(visitedViews)"
-        :to="tag" :key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">
-        {{generateTitle(tag.title)}}
-        <span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'></span>
-      </router-link>
+      <span v-for="tag in Array.from(visitedViews)">
+        <router-link v-if="!tag.meta.tagHidden" ref='tag' class="tags-view-item" :class="isActive(tag)?'active':''"
+          :to="tag" :key="tag.path" @contextmenu.prevent.native="openMenu(tag,$event)">
+          {{generateTitle(tag.title)}}
+          <span class='el-icon-close' @click.prevent.stop='closeSelectedTag(tag)'></span>
+        </router-link>
+      </span>
     </scroll-pane>
     <ul class='contextmenu' v-show="visible" :style="{left:left+'px',top:top+'px'}">
       <li @click="closeSelectedTag(selectedTag)">{{$t('tagsView.close')}}</li>
@@ -31,6 +33,7 @@ export default {
   },
   computed: {
     visitedViews() {
+      // console.log(this.$store.state.tagsView.visitedViews);
       return this.$store.state.tagsView.visitedViews
     }
   },

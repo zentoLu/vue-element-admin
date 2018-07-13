@@ -3,7 +3,7 @@ import Cookies from 'vue-cookie'
 const TokenKey = 'Admin-Token'
 
 export function getToken() {
-  console.log(Cookies.get(TokenKey))
+  // console.log(Cookies.get(TokenKey))
   return Cookies.get(TokenKey)
 }
 

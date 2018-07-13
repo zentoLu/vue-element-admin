@@ -94,7 +94,7 @@
     components: {
       AddOrUpdate
     },
-    created() {
+    created () {
       this.getDataList()
     },
     activated () {
@@ -103,7 +103,6 @@
     methods: {
       // 获取数据列表
       getDataList () {
-        console.log(1)
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('/sys/role/list'),
